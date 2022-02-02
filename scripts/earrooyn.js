@@ -24,6 +24,7 @@ let tSize = 20;
 let bonAd = 0;
 let tBonY = 0;
 let tBonTx = 30;
+let bonAnim = false;
 let scAnim = 0;
 
 let num = ["neunhee", "nane", "jees", "tree", "kiare", "queig", "shey", "shiaght", "hoght", "nuy", "jeih",
@@ -145,36 +146,45 @@ function draw() {
     textSize(32);
     
     fill(200);
-    ellipse(width/2, height*0.075, 100, 100);
+    ellipse(width/2, cnv.height*0.075, 100, 100);
     
     t % 60 == 0 ? stroke(255, 0, 0) : noStroke();
     t % 60 == 0 ? fill(255, 0, 0) : fill(94+t, 153-t*2.55, 24-t*0.4);
-    arc(width/2, height*0.075, 100, 100, -1.5708, t*0.017453*6-1.5708);
+    arc(width/2, cnv.height*0.075, 100, 100, -1.5708, t*0.017453*6-1.5708);
     t % 60 == 0 ? fill(255, 0, 0) : fill(255);
-    ellipse(width/2, height*0.075, 70, 70);
+    ellipse(width/2, cnv.height*0.075, 70, 70);
     t % 60 == 0 ? fill(255) : fill(0);
-    text(t, width/2, height*0.0875);
+    text(t, width/2, cnv.height*0.0875);
     
     if(finished) {
-      let bonDist = height*0.7125-height*0.4
-      if (tBonY < bonDist-100) tBonY+=6;
-      textSize(tBonTx);
-      if (tBonTx > 0) {
-        if (tBonY > 120) tBonTx-=2.78;
-        text("Time Bonus", width/2, height*0.4+tBonY);
-        text("x" + floor(tBon), width/2, height*0.475+tBonY);
+      if (bonAd != score || bonAnim) {
+        bonAnim = true;
+        let bonDist = cnv.height*0.7125-cnv.height*0.4
+        if (tBonY < bonDist-100) tBonY+=6;
+        textSize(tBonTx);
+        if (tBonTx > 0) {
+          if (tBonY > 120) tBonTx-=2.78;
+          text("Time Bonus", width/2, cnv.height*0.4+tBonY);
+          text("x" + floor(tBon), width/2, cnv.height*0.475+tBonY);
+        }
+        if (score < bonAd && tBonY >= bonDist - 100) {
+          score++;
+          scAnim+=0.1;
+          fill(0);
+          textSize(30);
+        }
+        else if (score == bonAd && tBonY >= bonDist - 100) {
+          scAnim = 0;
+          textSize(30);
+          if (score >= 45) text("Jeant dy mie!", width/2, cnv.height*.3);
+          else text("Prow reesht!", width/2, cnv.height*.3);
+          if (!gameEnded) gameEnd();
+        }
       }
-      if (score < bonAd & tBonY >= bonDist - 100) {
-        score++;
-        scAnim+=0.1;
-        fill(0);
-        textSize(30);
-      }
-      else if (score == bonAd) {
-        scAnim = 0;
-        if (score >= 45) text("Jeant dy mie!", width/2, height*.3);
-        else text("Prow reesht!", width/2, height*.25);
-        if (!gameEnded) gameEnd();
+      else if (bonAd == score && !bonAnim) {
+          scAnim = 0;
+          text("Prow reesht!", width/2, cnv.height*.3);
+          if (!gameEnded) gameEnd();
       }
     }
     else {
@@ -193,7 +203,7 @@ function draw() {
       text(num[ranNum], width/2, promptY);
       t = floor(frameCount/60);
       fill(0);
-      tBon -= 1/600;
+      if (tBon > 1) tBon -= 1/600;
     }
     
     if (points) {
@@ -218,12 +228,12 @@ function draw() {
     noFill();
     stroke(0);
     strokeWeight(1.5);
-    ellipse(width/2, height*0.7, 75+scAnim, 50+scAnim);
+    ellipse(width/2, cnv.height*0.8875, 75+scAnim, 50+scAnim);
     noStroke();
     textSize(32+scAnim);
     if (score < 0) fill(255, 0, 0);
     else fill(0);
-    text(floor(score), width/2, height*0.7125+scAnim/2);
+    text(floor(score), width/2, cnv.height*0.9+scAnim/2);
     
     if (corr) sqAnim();
     if (incorr) incorrect();
@@ -351,7 +361,7 @@ function sqAnim () {
     actBut.remove();
     if (ranSqs.length == 0) {
       if (!finished) {
-        bonAd = score * floor(tBon);
+        bonAd = score + floor(tBon) * 2;
         finished = true;
       }
     }
