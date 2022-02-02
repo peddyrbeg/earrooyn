@@ -62,7 +62,7 @@ function preload () {
 
 function setup() {
   
-  if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight-(displayHeight*0.151));
+  if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight);
   else cnv = createCanvas(320, displayHeight-(displayHeight*0.151));
   x = (displayWidth - width) / 2;
   cnv.position(x);
