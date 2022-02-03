@@ -62,7 +62,7 @@ function preload () {
 
 function setup() {
   
-  if (displayWidth <= 480) cnv = createCanvas(displayWidth, displayHeight);
+  if (displayWidth <= 600) cnv = createCanvas(displayWidth, displayHeight);
   else cnv = createCanvas(320, displayHeight-(displayHeight*0.151));
   x = (displayWidth - width) / 2;
   cnv.position(x);
@@ -70,7 +70,7 @@ function setup() {
   textFont(aBee);
   
   gridPosX = (displayWidth-300)/2;
-  gridPosY = (displayHeight/3.95);
+  gridPosY = 250;
   promptY = gridPosY - 50;
 
   for (let n = 13; n < 101; n++) {
@@ -91,15 +91,15 @@ function setup() {
   c3 = color(94, 153, 24);
 
   range1 = createSlider(1, 101, 0, 10);
-  range1.position(displayWidth/2-67.5, displayHeight*0.22);
+  range1.position(displayWidth/2-67.5, 215);
   range1.style("background-color", c1)
 
   range2 = createSlider(1, 101, 10, 10);
-  range2.position(displayWidth/2-67.5, displayHeight*0.36);
+  range2.position(displayWidth/2-67.5, 365);
 
   startBut = createButton("START");
   startBut.size(100, 50);
-  startBut.position(displayWidth/2-50, displayHeight*0.5);
+  startBut.position(displayWidth/2-50, 500);
   startBut.style("border", "none");
   startBut.style("background", c2);
   startBut.style("color", "white");
@@ -122,19 +122,19 @@ function draw() {
     textSize(20);
 
     fill(0);
-    text("Choose your number range:", cnv.width/2, cnv.height*0.125);
+    text("Choose your number range:", cnv.width/2, 100);
 
     noStroke();
     fill(c1);
     rectMode(CENTER);
-    rect(cnv.width/2, cnv.height*0.27, 200, 120, 20);
-    rect(cnv.width/2, cnv.height*0.43, 200, 120, 20);
+    rect(cnv.width/2, 225, 200, 100, 20);
+    rect(cnv.width/2, 375, 200, 100, 20);
 
     fill(255);
-    text("From", cnv.width/2, cnv.height*.24);
-    text(lower, cnv.width/2, cnv.height*.32);
-    text("to", cnv.width/2, cnv.height*.4);
-    text(upper, cnv.width/2, cnv.height*.48);
+    text("from", cnv.width/2, 207);
+    text(lower, cnv.width/2, 255);
+    text("to", cnv.width/2, 357);
+    text(upper, cnv.width/2, 405);
   }
 
   else {
@@ -146,44 +146,42 @@ function draw() {
     textSize(32);
     
     fill(200);
-    ellipse(width/2, cnv.height*0.075, 100, 100);
+    ellipse(width/2, 75, 100, 100);
     
     t % 60 == 0 ? stroke(255, 0, 0) : noStroke();
     t % 60 == 0 ? fill(255, 0, 0) : fill(94+t, 153-t*2.55, 24-t*0.4);
-    arc(width/2, cnv.height*0.075, 100, 100, -1.5708, t*0.017453*6-1.5708);
+    arc(width/2, 75, 100, 100, -1.5708, t*0.017453*6-1.5708);
     t % 60 == 0 ? fill(255, 0, 0) : fill(255);
-    ellipse(width/2, cnv.height*0.075, 70, 70);
+    ellipse(width/2, 75, 70, 70);
     t % 60 == 0 ? fill(255) : fill(0);
-    text(t, width/2, cnv.height*0.0875);
+    text(t, width/2, 86);
     
     if(finished) {
-      if (bonAd != score || bonAnim) {
-        bonAnim = true;
-        let bonDist = cnv.height*0.7125-cnv.height*0.4
-        if (tBonY < bonDist-100) tBonY+=6;
+      if (bonAd != score || bonAnim) { // check for bonus to add or if animation already initiated
+        bonAnim = true; // animation initiated
+        let bonDist = 625 - 275; // distance to move between score and bonus msg
+        if (tBonY < bonDist - 100) tBonY += 6; // move bonus text (-100 to adjust for size of text)
         textSize(tBonTx);
-        if (tBonTx > 0) {
-          if (tBonY > 120) tBonTx-=2.78;
-          text("Time Bonus", width/2, cnv.height*0.4+tBonY);
-          text("x" + floor(tBon), width/2, cnv.height*0.475+tBonY);
+        if (tBonTx > 0) { // set text size animation limit
+          if (tBonY > 120) tBonTx -= 2.78; // wait to shrink text after it has moved 120 pixels
+          text("Time Bonus", width/2, 275 + tBonY);
+          text("x" + floor(tBon), width/2, 305 + tBonY);
         }
-        if (score < bonAd && tBonY >= bonDist - 100) {
+        if (score < bonAd) { // add bonus to score
           score++;
-          scAnim+=0.1;
-          fill(0);
-          textSize(30);
+          scAnim++; // animate score size
         }
-        else if (score == bonAd && tBonY >= bonDist - 100) {
+        else if (score == bonAd && tBonY >= bonDist - 100) { // all animations complete
           scAnim = 0;
           textSize(30);
-          if (score >= 45) text("Jeant dy mie!", width/2, cnv.height*.3);
-          else text("Prow reesht!", width/2, cnv.height*.3);
+          if (score >= 45) text("Jeant dy mie!", width/2, 275);
+          else text("Prow reesht!", width/2, 275);
           if (!gameEnded) gameEnd();
         }
       }
       else if (bonAd == score && !bonAnim) {
           scAnim = 0;
-          text("Prow reesht!", width/2, cnv.height*.3);
+          text("Prow reesht!", width/2, 275);
           if (!gameEnded) gameEnd();
       }
     }
@@ -228,12 +226,12 @@ function draw() {
     noFill();
     stroke(0);
     strokeWeight(1.5);
-    ellipse(width/2, cnv.height*0.8875, 75+scAnim, 50+scAnim);
+    ellipse(width/2, 613, 75 + scAnim, 50+scAnim);
     noStroke();
-    textSize(32+scAnim);
+    textSize(32 + scAnim);
     if (score < 0) fill(255, 0, 0);
     else fill(0);
-    text(floor(score), width/2, cnv.height*0.9+scAnim/2);
+    text(floor(score), width/2, 625 + scAnim/2);
     
     if (corr) sqAnim();
     if (incorr) incorrect();
@@ -402,7 +400,7 @@ function gameEnd () {
 
   let home = createButton("RETRY");
   home.size(100, 50);
-  home.position(displayWidth/2-50, displayHeight*0.35);
+  home.position(displayWidth/2-50, 375);
   home.style("border", "none");
   home.style("background", c2);
   home.style("color", "white");
